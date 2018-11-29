@@ -285,4 +285,10 @@ class Config
         }
         return $this->getEnvironmentConfig()->getBusinessMutator();
     }
+
+
+    public function getServerHostname(): string
+    {
+        return getenv('HOSTNAME_EXT') ?: (getenv('HOSTNAME') ?: php_uname('n'));
+    }
 }
