@@ -5,6 +5,7 @@ namespace TutuRu\Config;
 
 use TutuRu\Config\Exceptions\ConfigNodeNotExist;
 use TutuRu\Config\Exceptions\InvalidConfigException;
+use TutuRu\Config\Exceptions\NotMutableApplicationConfigException;
 
 class Config
 {
@@ -114,10 +115,20 @@ class Config
     }
 
 
+    /**
+     * @param string $configId
+     * @param        $value
+     * @throws NotMutableApplicationConfigException
+     */
     public function setApplicationValue(string $configId, $value)
     {
-        $this->getApplicationConfig()->setValue($configId, $value);
-        $this->runtimeCache = [];
+        $applicationConfig = $this->getApplicationConfig();
+        if (!is_null($applicationConfig) && $applicationConfig instanceof MutableApplicationConfigInterface) {
+            $applicationConfig->setValue($configId, $value);
+            $this->runtimeCache = [];
+        } else {
+            throw new NotMutableApplicationConfigException();
+        }
     }
 
 

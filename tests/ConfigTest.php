@@ -3,11 +3,14 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\Config;
 
+use PHPUnit\Framework\MockObject\MockBuilder;
+use PHPUnit\Framework\MockObject\MockObject;
 use TutuRu\Config\Config;
 use TutuRu\Config\Exceptions\ConfigNodeNotExist;
 use TutuRu\Config\Exceptions\InvalidConfigException;
 use TutuRu\Tests\Config\Implementations\ApplicationConfig;
 use TutuRu\Tests\Config\Implementations\EnvironmentConfig;
+use TutuRu\Tests\Config\Implementations\MutableApplicationConfig;
 
 class ConfigTest extends BaseTest
 {
@@ -42,16 +45,54 @@ class ConfigTest extends BaseTest
     {
         $config = new Config();
 
-        $applicationConfig = new ApplicationConfig(['name' => 'test']);
-        $environmentConfig = new EnvironmentConfig(['service' => ['debug' => '1']]);
+        /** @var ApplicationConfig|MockObject $applicationConfig */
+        $applicationConfig = $this->getMockBuilder(ApplicationConfig::class)
+            ->setConstructorArgs([['name' => 'test']])
+            ->enableProxyingToOriginalMethods()
+            ->getMock();
+
+        /** @var EnvironmentConfig|MockObject $environmentConfig */
+        $environmentConfig = $this->getMockBuilder(EnvironmentConfig::class)
+            ->setConstructorArgs([['service' => ['debug' => '1']]])
+            ->enableProxyingToOriginalMethods()
+            ->getMock();
 
         $config->setApplicationConfig($applicationConfig);
         $config->setEnvironmentConfig($environmentConfig);
 
-        $this->assertEquals('test', $config->getValue('name'));
+        $applicationConfig->expects($this->exactly(1))->method('getValue');
+        $environmentConfig->expects($this->exactly(1))->method('getValue');
 
-        $applicationConfig->setValue('name', 'new test');
-        $this->assertEquals('test', $config->getValue('name'));
+        $config->getValue('name');
+        $config->getValue('name');
+    }
+
+
+    public function testGetValueRuntimeCacheReset()
+    {
+        $config = new Config();
+
+        /** @var MutableApplicationConfig|MockObject $applicationConfig */
+        $applicationConfig = $this->getMockBuilder(MutableApplicationConfig::class)
+            ->setConstructorArgs([['name' => 'test']])
+            ->enableProxyingToOriginalMethods()
+            ->getMock();
+
+        /** @var EnvironmentConfig|MockObject $environmentConfig */
+        $environmentConfig = $this->getMockBuilder(EnvironmentConfig::class)
+            ->setConstructorArgs([['service' => ['debug' => '1']]])
+            ->enableProxyingToOriginalMethods()
+            ->getMock();
+
+        $config->setApplicationConfig($applicationConfig);
+        $config->setEnvironmentConfig($environmentConfig);
+
+        $applicationConfig->expects($this->exactly(2))->method('getValue');
+        $environmentConfig->expects($this->exactly(2))->method('getValue');
+
+        $config->getValue('name');
+        $config->setApplicationValue('name', 'new value');
+        $config->getValue('name');
     }
 
 

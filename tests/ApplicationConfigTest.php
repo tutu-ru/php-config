@@ -6,7 +6,9 @@ namespace TutuRu\Tests\Config;
 use TutuRu\Config\Config;
 use TutuRu\Config\Exceptions\ConfigException;
 use TutuRu\Config\Exceptions\ConfigNodeNotExist;
+use TutuRu\Config\Exceptions\NotMutableApplicationConfigException;
 use TutuRu\Tests\Config\Implementations\ApplicationConfig;
+use TutuRu\Tests\Config\Implementations\MutableApplicationConfig;
 
 class ApplicationConfigTest extends BaseTest
 {
@@ -74,6 +76,17 @@ class ApplicationConfigTest extends BaseTest
     {
         $config = new Config();
         $applicationConfig = new ApplicationConfig(['test' => 'value']);
+        $config->setApplicationConfig($applicationConfig);
+
+        $this->expectException(NotMutableApplicationConfigException::class);
+        $config->setApplicationValue('test', 'new value');
+    }
+
+
+    public function testSetValueWithMutableConfig()
+    {
+        $config = new Config();
+        $applicationConfig = new MutableApplicationConfig(['test' => 'value']);
         $config->setApplicationConfig($applicationConfig);
 
         $config->setApplicationValue('test', 'new value');

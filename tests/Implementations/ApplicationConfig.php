@@ -7,8 +7,8 @@ use TutuRu\Config\ApplicationConfigInterface;
 
 class ApplicationConfig implements ApplicationConfigInterface
 {
-    private $data;
-    private $loadedData;
+    protected $data;
+    protected $loadedData;
 
 
     public function __construct($data)
@@ -29,10 +29,5 @@ class ApplicationConfig implements ApplicationConfigInterface
     public function getValue(string $configId)
     {
         return $this->loadedData[$configId] ?? null;
-    }
-
-    public function setValue(string $configId, $value)
-    {
-        $this->loadedData[$configId] = $value;
     }
 }
