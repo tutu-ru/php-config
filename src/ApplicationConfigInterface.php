@@ -5,5 +5,4 @@ namespace TutuRu\Config;
 
 interface ApplicationConfigInterface extends ConfigInterface
 {
-    public function setValue(string $configId, $value);
 }
