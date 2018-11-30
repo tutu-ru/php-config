@@ -7,6 +7,7 @@ use TutuRu\Config\Config;
 use TutuRu\Config\Exceptions\BusinessConfigUpdateException;
 use TutuRu\Config\Exceptions\ConfigException;
 use TutuRu\Config\Exceptions\ConfigNodeNotExist;
+use TutuRu\Config\Exceptions\InvalidConfigException;
 use TutuRu\Config\MutatorInterface;
 use TutuRu\Tests\Config\Implementations\EnvironmentConfig;
 
@@ -26,7 +27,7 @@ class EnvironmentConfigTest extends BaseTest
     {
         $config = new Config();
 
-        $this->expectException(ConfigException::class);
+        $this->expectException(InvalidConfigException::class);
         $config->getEnvironmentValue('test');
     }
 
@@ -35,7 +36,7 @@ class EnvironmentConfigTest extends BaseTest
     {
         $config = new Config();
 
-        $this->expectException(ConfigException::class);
+        $this->expectException(InvalidConfigException::class);
         $config->getEnvironmentBusinessValue('test');
     }
 
@@ -44,7 +45,7 @@ class EnvironmentConfigTest extends BaseTest
     {
         $config = new Config();
 
-        $this->expectException(ConfigException::class);
+        $this->expectException(InvalidConfigException::class);
         $config->getEnvironmentServiceValue('test');
     }
 
@@ -53,7 +54,7 @@ class EnvironmentConfigTest extends BaseTest
     {
         $config = new Config();
 
-        $this->expectException(ConfigException::class);
+        $this->expectException(InvalidConfigException::class);
         $config->getEnvironmentInfrastructureValue('test');
     }
 
@@ -62,7 +63,7 @@ class EnvironmentConfigTest extends BaseTest
     {
         $config = new Config();
 
-        $this->expectException(ConfigException::class);
+        $this->expectException(InvalidConfigException::class);
         $config->updateEnvironmentBusinessValue('test', 'test');
     }
 
@@ -71,7 +72,7 @@ class EnvironmentConfigTest extends BaseTest
     {
         $config = new Config();
 
-        $this->expectException(ConfigException::class);
+        $this->expectException(InvalidConfigException::class);
         $config->getEnvironmentServiceMutator();
     }
 
@@ -80,7 +81,7 @@ class EnvironmentConfigTest extends BaseTest
     {
         $config = new Config();
 
-        $this->expectException(ConfigException::class);
+        $this->expectException(InvalidConfigException::class);
         $config->getEnvironmentBusinessMutator();
     }
 

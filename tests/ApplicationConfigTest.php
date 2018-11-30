@@ -6,6 +6,7 @@ namespace TutuRu\Tests\Config;
 use TutuRu\Config\Config;
 use TutuRu\Config\Exceptions\ConfigException;
 use TutuRu\Config\Exceptions\ConfigNodeNotExist;
+use TutuRu\Config\Exceptions\InvalidConfigException;
 use TutuRu\Config\Exceptions\NotMutableApplicationConfigException;
 use TutuRu\Tests\Config\Implementations\ApplicationConfig;
 use TutuRu\Tests\Config\Implementations\MutableApplicationConfig;
@@ -26,7 +27,7 @@ class ApplicationConfigTest extends BaseTest
     {
         $config = new Config();
 
-        $this->expectException(ConfigException::class);
+        $this->expectException(InvalidConfigException::class);
         $config->getApplicationValue('test');
     }
 
