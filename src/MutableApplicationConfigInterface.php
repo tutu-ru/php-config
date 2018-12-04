@@ -5,5 +5,5 @@ namespace TutuRu\Config;
 
 interface MutableApplicationConfigInterface extends ApplicationConfigInterface
 {
-    public function setValue(string $configId, $value);
+    public function setValue(string $path, $value);
 }

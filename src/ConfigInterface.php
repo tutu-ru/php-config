@@ -5,9 +5,9 @@ namespace TutuRu\Config;
 
 interface ConfigInterface
 {
-    public const CONFIG_NODES_SEPARATOR = '.';
+    public const CONFIG_PATH_SEPARATOR = '.';
 
     public function load();
 
-    public function getValue(string $configId);
+    public function getValue(string $path);
 }

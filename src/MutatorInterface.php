@@ -7,30 +7,11 @@ interface MutatorInterface
 {
     public function init();
 
+    public function copy(string $pathFrom, string $pathTo);
 
-    /**
-     * @param string $pathFrom
-     * @param string $pathTo
-     */
-    public function copy($pathFrom, $pathTo);
+    public function delete(string $path);
 
+    public function setValue(string $path, $value);
 
-    /**
-     * @param string $path
-     */
-    public function delete($path);
-
-
-    /**
-     * @param string $path
-     * @param mixed  $value
-     */
-    public function setValue($path, $value);
-
-
-    /**
-     * @param string $path
-     * @return mixed
-     */
-    public function getValue($path);
+    public function getValue(string $path);
 }

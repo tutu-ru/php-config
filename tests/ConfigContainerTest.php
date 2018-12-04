@@ -3,32 +3,31 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\Config;
 
-use PHPUnit\Framework\MockObject\MockBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
-use TutuRu\Config\Config;
-use TutuRu\Config\Exceptions\ConfigNodeNotExist;
-use TutuRu\Config\Exceptions\InvalidConfigException;
+use TutuRu\Config\ConfigContainer;
+use TutuRu\Config\Exceptions\ConfigPathNotExistExceptionInterface;
+use TutuRu\Config\Exceptions\InvalidConfigExceptionInterface;
 use TutuRu\Tests\Config\Implementations\ApplicationConfig;
 use TutuRu\Tests\Config\Implementations\EnvironmentConfig;
 use TutuRu\Tests\Config\Implementations\MutableApplicationConfig;
 
-class ConfigTest extends BaseTest
+class ConfigContainerTest extends BaseTest
 {
     public function testNotInitializedConfig()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
 
         $this->assertNull($config->getApplicationConfig());
         $this->assertNull($config->getEnvironmentConfig());
 
-        $this->expectException(InvalidConfigException::class);
+        $this->expectException(InvalidConfigExceptionInterface::class);
         $this->assertNull($config->getValue('some.node'));
     }
 
 
     public function testGetValue()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
 
         $applicationConfig = new ApplicationConfig(['name' => 'test']);
         $environmentConfig = new EnvironmentConfig(['service' => ['debug' => '1']]);
@@ -43,7 +42,7 @@ class ConfigTest extends BaseTest
 
     public function testGetValueRuntimeCache()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
 
         /** @var ApplicationConfig|MockObject $applicationConfig */
         $applicationConfig = $this->getMockBuilder(ApplicationConfig::class)
@@ -70,7 +69,7 @@ class ConfigTest extends BaseTest
 
     public function testGetValueRuntimeCacheReset()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
 
         /** @var MutableApplicationConfig|MockObject $applicationConfig */
         $applicationConfig = $this->getMockBuilder(MutableApplicationConfig::class)
@@ -98,7 +97,7 @@ class ConfigTest extends BaseTest
 
     public function testGetValueNotExist()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
 
         $applicationConfig = new ApplicationConfig(['name' => 'test']);
         $environmentConfig = new EnvironmentConfig(['service' => ['debug' => '1']]);
@@ -112,7 +111,7 @@ class ConfigTest extends BaseTest
 
     public function testGetValueNotExistWithDefault()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
 
         $applicationConfig = new ApplicationConfig(['name' => 'test']);
         $environmentConfig = new EnvironmentConfig(['service' => ['debug' => '1']]);
@@ -126,7 +125,7 @@ class ConfigTest extends BaseTest
 
     public function testGetValueNotExistWithRequired()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
 
         $applicationConfig = new ApplicationConfig(['name' => 'test']);
         $environmentConfig = new EnvironmentConfig(['service' => ['debug' => '1']]);
@@ -134,14 +133,14 @@ class ConfigTest extends BaseTest
         $config->setApplicationConfig($applicationConfig);
         $config->setEnvironmentConfig($environmentConfig);
 
-        $this->expectException(ConfigNodeNotExist::class);
+        $this->expectException(ConfigPathNotExistExceptionInterface::class);
         $config->getValue('not_exist', null, true);
     }
 
 
     public function testDefaultPriorities()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
 
         $applicationConfig = new ApplicationConfig(['name' => 'test 1']);
         $environmentConfig = new EnvironmentConfig(['service' => ['name' => 'test 2']]);
@@ -155,7 +154,7 @@ class ConfigTest extends BaseTest
 
     public function testCustomPriorities()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
 
         $applicationConfig = new ApplicationConfig(['name' => 'test 1']);
         $environmentConfig = new EnvironmentConfig(['service' => ['name' => 'test 2']]);

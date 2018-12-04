@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\Config\Implementations;
 
+use TutuRu\Config\ContainerExceptions\UpdateForbiddenException;
 use TutuRu\Config\EnvironmentConfigInterface;
-use TutuRu\Config\Exceptions\BusinessConfigUpdateException;
 use TutuRu\Config\MutatorInterface;
 
 class EnvironmentConfig implements EnvironmentConfigInterface
@@ -23,11 +23,11 @@ class EnvironmentConfig implements EnvironmentConfigInterface
         $this->loadedData = $this->data;
     }
 
-    public function getValue(string $configId)
+    public function getValue(string $path)
     {
         $value = null;
         foreach (['service', 'business', 'infra'] as $type) {
-            $value = $this->loadedData[$type][$configId] ?? null;
+            $value = $this->loadedData[$type][$path] ?? null;
             if (!is_null($value)) {
                 break;
             }
@@ -35,36 +35,29 @@ class EnvironmentConfig implements EnvironmentConfigInterface
         return $value;
     }
 
-    public function getBusinessValue(string $configId)
+    public function getBusinessValue(string $path)
     {
-        return $this->loadedData['business'][$configId] ?? null;
+        return $this->loadedData['business'][$path] ?? null;
     }
 
-    /**
-     * @param string $configId
-     * @param mixed  $value
-     *
-     * @throws BusinessConfigUpdateException
-     * @return void
-     */
-    public function updateBusinessValue(string $configId, $value)
+    public function updateBusinessValue(string $path, $value)
     {
-        $currentValue = $this->getBusinessValue($configId);
+        $currentValue = $this->getBusinessValue($path);
         if (is_null($currentValue)) {
-            throw new BusinessConfigUpdateException($configId);
+            throw new UpdateForbiddenException($path);
         }
-        $this->loadedData['business'][$configId] = $value;
-        $this->data['business'][$configId] = $value;
+        $this->loadedData['business'][$path] = $value;
+        $this->data['business'][$path] = $value;
     }
 
-    public function getServiceValue(string $configId)
+    public function getServiceValue(string $path)
     {
-        return $this->loadedData['service'][$configId] ?? null;
+        return $this->loadedData['service'][$path] ?? null;
     }
 
-    public function getInfrastructureValue(string $configId)
+    public function getInfrastructureValue(string $path)
     {
-        return $this->loadedData['infra'][$configId] ?? null;
+        return $this->loadedData['infra'][$path] ?? null;
     }
 
     public function getBusinessMutator(): ?MutatorInterface

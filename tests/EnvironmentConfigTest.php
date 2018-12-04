@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\Config;
 
-use TutuRu\Config\Config;
-use TutuRu\Config\Exceptions\BusinessConfigUpdateException;
-use TutuRu\Config\Exceptions\ConfigException;
-use TutuRu\Config\Exceptions\ConfigNodeNotExist;
-use TutuRu\Config\Exceptions\InvalidConfigException;
+use TutuRu\Config\ConfigContainer;
+use TutuRu\Config\Exceptions\ConfigPathNotExistExceptionInterface;
+use TutuRu\Config\Exceptions\ConfigUpdateForbiddenExceptionInterface;
+use TutuRu\Config\Exceptions\InvalidConfigExceptionInterface;
 use TutuRu\Config\MutatorInterface;
 use TutuRu\Tests\Config\Implementations\EnvironmentConfig;
 
@@ -15,7 +14,7 @@ class EnvironmentConfigTest extends BaseTest
 {
     public function testInitializeWithEnvironmentConfig()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
         $environmentConfig = new EnvironmentConfig($this->getDefaultConfigData());
         $config->setEnvironmentConfig($environmentConfig);
 
@@ -25,63 +24,63 @@ class EnvironmentConfigTest extends BaseTest
 
     public function testGetValueWithNotInitializedConfig()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
 
-        $this->expectException(InvalidConfigException::class);
+        $this->expectException(InvalidConfigExceptionInterface::class);
         $config->getEnvironmentValue('test');
     }
 
 
     public function testGetBusinessValueWithNotInitializedConfig()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
 
-        $this->expectException(InvalidConfigException::class);
+        $this->expectException(InvalidConfigExceptionInterface::class);
         $config->getEnvironmentBusinessValue('test');
     }
 
 
     public function testGetServiceValueWithNotInitializedConfig()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
 
-        $this->expectException(InvalidConfigException::class);
+        $this->expectException(InvalidConfigExceptionInterface::class);
         $config->getEnvironmentServiceValue('test');
     }
 
 
     public function testGetInfrastructureValueWithNotInitializedConfig()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
 
-        $this->expectException(InvalidConfigException::class);
+        $this->expectException(InvalidConfigExceptionInterface::class);
         $config->getEnvironmentInfrastructureValue('test');
     }
 
 
     public function testUpdateBusinessValueWithNotInitializedConfig()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
 
-        $this->expectException(InvalidConfigException::class);
+        $this->expectException(InvalidConfigExceptionInterface::class);
         $config->updateEnvironmentBusinessValue('test', 'test');
     }
 
 
     public function testGetServiceMutatorWithNotInitializedConfig()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
 
-        $this->expectException(InvalidConfigException::class);
+        $this->expectException(InvalidConfigExceptionInterface::class);
         $config->getEnvironmentServiceMutator();
     }
 
 
     public function testGetBusinessMutatorWithNotInitializedConfig()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
 
-        $this->expectException(InvalidConfigException::class);
+        $this->expectException(InvalidConfigExceptionInterface::class);
         $config->getEnvironmentBusinessMutator();
     }
 
@@ -98,7 +97,7 @@ class EnvironmentConfigTest extends BaseTest
 
     public function testGetValue()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
         $environmentConfig = new EnvironmentConfig($this->getDefaultConfigData());
         $config->setEnvironmentConfig($environmentConfig);
 
@@ -111,7 +110,7 @@ class EnvironmentConfigTest extends BaseTest
 
     public function testGetValueNotExist()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
         $environmentConfig = new EnvironmentConfig($this->getDefaultConfigData());
         $config->setEnvironmentConfig($environmentConfig);
 
@@ -124,7 +123,7 @@ class EnvironmentConfigTest extends BaseTest
 
     public function testGetValueNotExistWithDefault()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
         $environmentConfig = new EnvironmentConfig($this->getDefaultConfigData());
         $config->setEnvironmentConfig($environmentConfig);
 
@@ -137,51 +136,51 @@ class EnvironmentConfigTest extends BaseTest
 
     public function testGetValueNotExistButRequired()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
         $environmentConfig = new EnvironmentConfig($this->getDefaultConfigData());
         $config->setEnvironmentConfig($environmentConfig);
 
-        $this->expectException(ConfigNodeNotExist::class);
+        $this->expectException(ConfigPathNotExistExceptionInterface::class);
         $config->getEnvironmentValue('not_existing_value', 'default', true);
     }
 
 
     public function testGetServiceValueNotExistButRequired()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
         $environmentConfig = new EnvironmentConfig($this->getDefaultConfigData());
         $config->setEnvironmentConfig($environmentConfig);
 
-        $this->expectException(ConfigNodeNotExist::class);
+        $this->expectException(ConfigPathNotExistExceptionInterface::class);
         $config->getEnvironmentServiceValue('not_existing_value', 'default', true);
     }
 
 
     public function testGetBusinessValueNotExistButRequired()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
         $environmentConfig = new EnvironmentConfig($this->getDefaultConfigData());
         $config->setEnvironmentConfig($environmentConfig);
 
-        $this->expectException(ConfigNodeNotExist::class);
+        $this->expectException(ConfigPathNotExistExceptionInterface::class);
         $config->getEnvironmentBusinessValue('not_existing_value', 'default', true);
     }
 
 
     public function testGetInfrastructureValueNotExistButRequired()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
         $environmentConfig = new EnvironmentConfig($this->getDefaultConfigData());
         $config->setEnvironmentConfig($environmentConfig);
 
-        $this->expectException(ConfigNodeNotExist::class);
+        $this->expectException(ConfigPathNotExistExceptionInterface::class);
         $config->getEnvironmentInfrastructureValue('not_existing_value', 'default', true);
     }
 
 
     public function testUpdateBusinessValue()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
         $environmentConfig = new EnvironmentConfig($this->getDefaultConfigData());
         $config->setEnvironmentConfig($environmentConfig);
 
@@ -192,18 +191,18 @@ class EnvironmentConfigTest extends BaseTest
 
     public function testUpdateNotExistingBusinessValue()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
         $environmentConfig = new EnvironmentConfig($this->getDefaultConfigData());
         $config->setEnvironmentConfig($environmentConfig);
 
-        $this->expectException(BusinessConfigUpdateException::class);
+        $this->expectException(ConfigUpdateForbiddenExceptionInterface::class);
         $config->updateEnvironmentBusinessValue('test', 'new name');
     }
 
 
     public function testGetServiceMutator()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
         $environmentConfig = new EnvironmentConfig($this->getDefaultConfigData());
         $config->setEnvironmentConfig($environmentConfig);
 
@@ -214,7 +213,7 @@ class EnvironmentConfigTest extends BaseTest
 
     public function testGetBusinessMutator()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
         $environmentConfig = new EnvironmentConfig($this->getDefaultConfigData());
         $config->setEnvironmentConfig($environmentConfig);
 

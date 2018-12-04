@@ -26,8 +26,8 @@ class ApplicationConfig implements ApplicationConfigInterface
         $this->loadedData = $this->data;
     }
 
-    public function getValue(string $configId)
+    public function getValue(string $path)
     {
-        return $this->loadedData[$configId] ?? null;
+        return $this->loadedData[$path] ?? null;
     }
 }

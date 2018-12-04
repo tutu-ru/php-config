@@ -18,40 +18,25 @@ class Mutator implements MutatorInterface
 
     public function init()
     {
-        // TODO: Implement init() method.
     }
 
-    /**
-     * @param string $pathFrom
-     * @param string $pathTo
-     */
-    public function copy($pathFrom, $pathTo)
+
+    public function copy(string $pathFrom, string $pathTo)
     {
-        // TODO: Implement copy() method.
     }
 
-    /**
-     * @param string $path
-     */
-    public function delete($path)
+
+    public function delete(string $path)
     {
-        // TODO: Implement delete() method.
     }
 
-    /**
-     * @param string $path
-     * @param mixed  $value
-     */
-    public function setValue($path, $value)
+
+    public function setValue(string $path, $value)
     {
-        // TODO: Implement setValue() method.
     }
 
-    /**
-     * @param string $path
-     * @return mixed
-     */
-    public function getValue($path)
+
+    public function getValue(string $path)
     {
         return $this->type;
     }

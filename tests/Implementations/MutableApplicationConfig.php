@@ -7,8 +7,8 @@ use TutuRu\Config\MutableApplicationConfigInterface;
 
 class MutableApplicationConfig extends ApplicationConfig implements MutableApplicationConfigInterface
 {
-    public function setValue(string $configId, $value)
+    public function setValue(string $path, $value)
     {
-        $this->loadedData[$configId] = $value;
+        $this->loadedData[$path] = $value;
     }
 }

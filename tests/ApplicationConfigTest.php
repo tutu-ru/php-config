@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\Config;
 
-use TutuRu\Config\Config;
-use TutuRu\Config\Exceptions\ConfigException;
-use TutuRu\Config\Exceptions\ConfigNodeNotExist;
-use TutuRu\Config\Exceptions\InvalidConfigException;
-use TutuRu\Config\Exceptions\NotMutableApplicationConfigException;
+use TutuRu\Config\ConfigContainer;
+use TutuRu\Config\Exceptions\ConfigPathNotExistExceptionInterface;
+use TutuRu\Config\Exceptions\ConfigUpdateForbiddenExceptionInterface;
+use TutuRu\Config\Exceptions\InvalidConfigExceptionInterface;
 use TutuRu\Tests\Config\Implementations\ApplicationConfig;
 use TutuRu\Tests\Config\Implementations\MutableApplicationConfig;
 
@@ -15,7 +14,7 @@ class ApplicationConfigTest extends BaseTest
 {
     public function testInitializeWithApplicationConfig()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
         $applicationConfig = new ApplicationConfig(['test' => 'value']);
         $config->setApplicationConfig($applicationConfig);
 
@@ -25,16 +24,16 @@ class ApplicationConfigTest extends BaseTest
 
     public function testGetValueWithNotInitializedConfig()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
 
-        $this->expectException(InvalidConfigException::class);
+        $this->expectException(InvalidConfigExceptionInterface::class);
         $config->getApplicationValue('test');
     }
 
 
     public function testGetValue()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
         $applicationConfig = new ApplicationConfig(['test' => 'value']);
         $config->setApplicationConfig($applicationConfig);
 
@@ -44,7 +43,7 @@ class ApplicationConfigTest extends BaseTest
 
     public function testGetValueNotExist()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
         $applicationConfig = new ApplicationConfig(['test' => 'value']);
         $config->setApplicationConfig($applicationConfig);
 
@@ -54,7 +53,7 @@ class ApplicationConfigTest extends BaseTest
 
     public function testGetValueNotExistWithDefault()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
         $applicationConfig = new ApplicationConfig(['test' => 'value']);
         $config->setApplicationConfig($applicationConfig);
 
@@ -64,29 +63,29 @@ class ApplicationConfigTest extends BaseTest
 
     public function testGetValueNotExistButRequired()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
         $applicationConfig = new ApplicationConfig(['test' => 'value']);
         $config->setApplicationConfig($applicationConfig);
 
-        $this->expectException(ConfigNodeNotExist::class);
+        $this->expectException(ConfigPathNotExistExceptionInterface::class);
         $config->getApplicationValue('not_existing_value', 'default', true);
     }
 
 
     public function testSetValue()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
         $applicationConfig = new ApplicationConfig(['test' => 'value']);
         $config->setApplicationConfig($applicationConfig);
 
-        $this->expectException(NotMutableApplicationConfigException::class);
+        $this->expectException(ConfigUpdateForbiddenExceptionInterface::class);
         $config->setApplicationValue('test', 'new value');
     }
 
 
     public function testSetValueWithMutableConfig()
     {
-        $config = new Config();
+        $config = new ConfigContainer();
         $applicationConfig = new MutableApplicationConfig(['test' => 'value']);
         $config->setApplicationConfig($applicationConfig);
 
