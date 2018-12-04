@@ -66,10 +66,7 @@ class ConfigContainer
         if (!$initialized) {
             throw new InvalidConfigException("No initialized configs (application or environment)");
         }
-        if ($required && is_null($value)) {
-            throw new PathNotExistsException($path);
-        }
-        return $defaultValue;
+        return $this->prepareValue($path, $value, $defaultValue, $required);
     }
 
 
@@ -89,14 +86,7 @@ class ConfigContainer
     {
         $this->checkApplicationConfig();
         $value = $this->getApplicationConfig()->getValue($path);
-        if (is_null($value)) {
-            if ($required) {
-                throw new PathNotExistsException($path);
-            } else {
-                $value = $defaultValue;
-            }
-        }
-        return $value;
+        return $this->prepareValue($path, $value, $defaultValue, $required);
     }
 
 
@@ -104,14 +94,7 @@ class ConfigContainer
     {
         $this->checkEnvironmentConfig();
         $value = $this->getEnvironmentConfig()->getValue($path);
-        if (is_null($value)) {
-            if ($required) {
-                throw new PathNotExistsException($path);
-            } else {
-                $value = $defaultValue;
-            }
-        }
-        return $value;
+        return $this->prepareValue($path, $value, $defaultValue, $required);
     }
 
 
@@ -119,14 +102,7 @@ class ConfigContainer
     {
         $this->checkEnvironmentConfig();
         $value = $this->getEnvironmentConfig()->getServiceValue($path);
-        if (is_null($value)) {
-            if ($required) {
-                throw new PathNotExistsException($path);
-            } else {
-                $value = $defaultValue;
-            }
-        }
-        return $value;
+        return $this->prepareValue($path, $value, $defaultValue, $required);
     }
 
 
@@ -134,14 +110,7 @@ class ConfigContainer
     {
         $this->checkEnvironmentConfig();
         $value = $this->getEnvironmentConfig()->getBusinessValue($path);
-        if (is_null($value)) {
-            if ($required) {
-                throw new PathNotExistsException($path);
-            } else {
-                $value = $defaultValue;
-            }
-        }
-        return $value;
+        return $this->prepareValue($path, $value, $defaultValue, $required);
     }
 
 
@@ -149,14 +118,7 @@ class ConfigContainer
     {
         $this->checkEnvironmentConfig();
         $value = $this->getEnvironmentConfig()->getInfrastructureValue($path);
-        if (is_null($value)) {
-            if ($required) {
-                throw new PathNotExistsException($path);
-            } else {
-                $value = $defaultValue;
-            }
-        }
-        return $value;
+        return $this->prepareValue($path, $value, $defaultValue, $required);
     }
 
 
@@ -227,5 +189,18 @@ class ConfigContainer
         if (is_null($this->getEnvironmentConfig())) {
             throw new InvalidConfigException("Environment config not initialized");
         }
+    }
+
+
+    private function prepareValue(string $path, $value, $defaultValue, bool $required)
+    {
+        if (is_null($value)) {
+            if ($required) {
+                throw new PathNotExistsException($path);
+            } else {
+                $value = $defaultValue;
+            }
+        }
+        return $value;
     }
 }
