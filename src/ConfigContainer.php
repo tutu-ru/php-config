@@ -84,9 +84,7 @@ class ConfigContainer
 
     public function getApplicationValue(string $path, $defaultValue = null, bool $required = false)
     {
-        if (is_null($this->getApplicationConfig())) {
-            throw new InvalidConfigException("Application config not initialized");
-        }
+        $this->checkApplicationConfig();
         $value = $this->getApplicationConfig()->getValue($path);
         if (is_null($value)) {
             if ($required) {
@@ -101,9 +99,7 @@ class ConfigContainer
 
     public function getEnvironmentValue(string $path, $defaultValue = null, bool $required = false)
     {
-        if (is_null($this->getEnvironmentConfig())) {
-            throw new InvalidConfigException("Environment config not initialized");
-        }
+        $this->checkEnvironmentConfig();
         $value = $this->getEnvironmentConfig()->getValue($path);
         if (is_null($value)) {
             if ($required) {
@@ -118,9 +114,7 @@ class ConfigContainer
 
     public function getEnvironmentServiceValue(string $path, $defaultValue = null, bool $required = false)
     {
-        if (is_null($this->getEnvironmentConfig())) {
-            throw new InvalidConfigException("Environment config not initialized");
-        }
+        $this->checkEnvironmentConfig();
         $value = $this->getEnvironmentConfig()->getServiceValue($path);
         if (is_null($value)) {
             if ($required) {
@@ -135,9 +129,7 @@ class ConfigContainer
 
     public function getEnvironmentBusinessValue(string $path, $defaultValue = null, bool $required = false)
     {
-        if (is_null($this->getEnvironmentConfig())) {
-            throw new InvalidConfigException("Environment config not initialized");
-        }
+        $this->checkEnvironmentConfig();
         $value = $this->getEnvironmentConfig()->getBusinessValue($path);
         if (is_null($value)) {
             if ($required) {
@@ -169,27 +161,21 @@ class ConfigContainer
 
     public function updateEnvironmentBusinessValue(string $path, $value)
     {
-        if (is_null($this->getEnvironmentConfig())) {
-            throw new InvalidConfigException("Environment config not initialized");
-        }
+        $this->checkEnvironmentConfig();
         $this->getEnvironmentConfig()->updateBusinessValue($path, $value);
     }
 
 
     public function getEnvironmentServiceMutator(): ?MutatorInterface
     {
-        if (is_null($this->getEnvironmentConfig())) {
-            throw new InvalidConfigException("Environment config not initialized");
-        }
+        $this->checkEnvironmentConfig();
         return $this->getEnvironmentConfig()->getServiceMutator();
     }
 
 
     public function getEnvironmentBusinessMutator(): ?MutatorInterface
     {
-        if (is_null($this->getEnvironmentConfig())) {
-            throw new InvalidConfigException("Environment config not initialized");
-        }
+        $this->checkEnvironmentConfig();
         return $this->getEnvironmentConfig()->getBusinessMutator();
     }
 
@@ -220,6 +206,22 @@ class ConfigContainer
         $this->prioritizedConfigsList = [];
         foreach ($this->configs as $configData) {
             $this->prioritizedConfigsList[] = $configData['implementation'];
+        }
+    }
+
+
+    private function checkApplicationConfig()
+    {
+        if (is_null($this->getApplicationConfig())) {
+            throw new InvalidConfigException("Application config not initialized");
+        }
+    }
+
+
+    private function checkEnvironmentConfig()
+    {
+        if (is_null($this->getEnvironmentConfig())) {
+            throw new InvalidConfigException("Environment config not initialized");
         }
     }
 }
