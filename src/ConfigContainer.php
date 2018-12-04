@@ -12,6 +12,9 @@ class ConfigContainer
     private const CONFIG_TYPE_APP = 'application';
     private const CONFIG_TYPE_ENV = 'environment';
 
+    private const CONFIGS_LIST_KEY_PRIORITY = 'priority';
+    private const CONFIGS_LIST_KEY_IMPLEMENTATION = 'implementation';
+
     private $configs = [];
 
     /** @var ConfigInterface[] */
@@ -34,13 +37,13 @@ class ConfigContainer
 
     public function getApplicationConfig(): ?ApplicationConfigInterface
     {
-        return $this->configs[self::CONFIG_TYPE_APP]['implementation'] ?? null;
+        return $this->configs[self::CONFIG_TYPE_APP][self::CONFIGS_LIST_KEY_IMPLEMENTATION] ?? null;
     }
 
 
     public function getEnvironmentConfig(): ?EnvironmentConfigInterface
     {
-        return $this->configs[self::CONFIG_TYPE_ENV]['implementation'] ?? null;
+        return $this->configs[self::CONFIG_TYPE_ENV][self::CONFIGS_LIST_KEY_IMPLEMENTATION] ?? null;
     }
 
 
@@ -144,9 +147,7 @@ class ConfigContainer
 
     public function getEnvironmentInfrastructureValue(string $path, $defaultValue = null, bool $required = false)
     {
-        if (is_null($this->getEnvironmentConfig())) {
-            throw new InvalidConfigException("Environment config not initialized");
-        }
+        $this->checkEnvironmentConfig();
         $value = $this->getEnvironmentConfig()->getInfrastructureValue($path);
         if (is_null($value)) {
             if ($required) {
@@ -189,7 +190,10 @@ class ConfigContainer
     private function setConfig(ConfigInterface $config, string $id, int $priority)
     {
         $config->load();
-        $this->configs[$id] = ['implementation' => $config, 'priority' => $priority];
+        $this->configs[$id] = [
+            self::CONFIGS_LIST_KEY_IMPLEMENTATION => $config,
+            self::CONFIGS_LIST_KEY_PRIORITY       => $priority
+        ];
         $this->runtimeCache = [];
         $this->buildPrioritizedConfigList();
     }
@@ -200,12 +204,12 @@ class ConfigContainer
         uasort(
             $this->configs,
             function ($a, $b) {
-                return $b['priority'] <=> $a['priority'];
+                return $b[self::CONFIGS_LIST_KEY_PRIORITY] <=> $a[self::CONFIGS_LIST_KEY_PRIORITY];
             }
         );
         $this->prioritizedConfigsList = [];
         foreach ($this->configs as $configData) {
-            $this->prioritizedConfigsList[] = $configData['implementation'];
+            $this->prioritizedConfigsList[] = $configData[self::CONFIGS_LIST_KEY_IMPLEMENTATION];
         }
     }
 
