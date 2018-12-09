@@ -143,12 +143,6 @@ class ConfigContainer
     }
 
 
-    public function getServerHostname(): string
-    {
-        return getenv('HOSTNAME_EXT') ?: (getenv('HOSTNAME') ?: php_uname('n'));
-    }
-
-
     private function setConfig(ConfigInterface $config, string $id, int $priority)
     {
         $config->load();
