@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TutuRu\Tests\Config;
 
 use TutuRu\Config\Exceptions\InvalidConfigExceptionInterface;
+use TutuRu\Tests\Config\JsonConfig\JsonConfigFactory;
 
 class JsonConfigFactoryTest extends BaseTest
 {

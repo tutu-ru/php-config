@@ -16,7 +16,7 @@
   "autoload": {
     "psr-4": {
       "TutuRu\\Config\\": "src/",
-      "TutuRu\\Tests\\Config\\": "tests/JsonConfig/"
+      "TutuRu\\Tests\\Config\\JsonConfig\\": "tests/JsonConfig/"
     }
   },
   "autoload-dev": {

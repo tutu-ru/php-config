@@ -1,11 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace TutuRu\Tests\Config;
+namespace TutuRu\Tests\Config\JsonConfig;
 
 use TutuRu\Config\ConfigContainer;
-use TutuRu\Tests\Config\JsonConfig\EnvironmentJsonConfig;
-use TutuRu\Tests\Config\JsonConfig\MutableApplicationJsonConfig;
 
 class JsonConfigFactory
 {
