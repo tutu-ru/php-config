@@ -7,9 +7,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 use TutuRu\Config\ConfigContainer;
 use TutuRu\Config\Exceptions\ConfigPathNotExistExceptionInterface;
 use TutuRu\Config\Exceptions\InvalidConfigExceptionInterface;
-use TutuRu\Tests\Config\Implementations\ApplicationConfig;
-use TutuRu\Tests\Config\Implementations\EnvironmentConfig;
-use TutuRu\Tests\Config\Implementations\MutableApplicationConfig;
+use TutuRu\Tests\Config\JsonConfig\ApplicationJsonConfig;
+use TutuRu\Tests\Config\JsonConfig\EnvironmentJsonConfig;
+use TutuRu\Tests\Config\JsonConfig\MutableApplicationJsonConfig;
 
 class ConfigContainerTest extends BaseTest
 {
@@ -29,8 +29,8 @@ class ConfigContainerTest extends BaseTest
     {
         $config = new ConfigContainer();
 
-        $applicationConfig = new ApplicationConfig(['name' => 'test']);
-        $environmentConfig = new EnvironmentConfig(['service' => ['debug' => '1']]);
+        $applicationConfig = new ApplicationJsonConfig(__DIR__ . '/config/application.json');
+        $environmentConfig = EnvironmentJsonConfig::createFromOneFile(__DIR__ . '/config/env_service.json');
 
         $config->setApplicationConfig($applicationConfig);
         $config->setEnvironmentConfig($environmentConfig);
@@ -44,15 +44,15 @@ class ConfigContainerTest extends BaseTest
     {
         $config = new ConfigContainer();
 
-        /** @var ApplicationConfig|MockObject $applicationConfig */
-        $applicationConfig = $this->getMockBuilder(ApplicationConfig::class)
-            ->setConstructorArgs([['name' => 'test']])
+        /** @var ApplicationJsonConfig|MockObject $applicationConfig */
+        $applicationConfig = $this->getMockBuilder(ApplicationJsonConfig::class)
+            ->setConstructorArgs([__DIR__ . '/config/application.json'])
             ->enableProxyingToOriginalMethods()
             ->getMock();
 
-        /** @var EnvironmentConfig|MockObject $environmentConfig */
-        $environmentConfig = $this->getMockBuilder(EnvironmentConfig::class)
-            ->setConstructorArgs([['service' => ['debug' => '1']]])
+        /** @var EnvironmentJsonConfig|MockObject $environmentConfig */
+        $environmentConfig = $this->getMockBuilder(EnvironmentJsonConfig::class)
+            ->setConstructorArgs(array_fill(0, 3, __DIR__ . '/config/env_service.json'))
             ->enableProxyingToOriginalMethods()
             ->getMock();
 
@@ -71,15 +71,15 @@ class ConfigContainerTest extends BaseTest
     {
         $config = new ConfigContainer();
 
-        /** @var MutableApplicationConfig|MockObject $applicationConfig */
-        $applicationConfig = $this->getMockBuilder(MutableApplicationConfig::class)
-            ->setConstructorArgs([['name' => 'test']])
+        /** @var MutableApplicationJsonConfig|MockObject $applicationConfig */
+        $applicationConfig = $this->getMockBuilder(MutableApplicationJsonConfig::class)
+            ->setConstructorArgs([__DIR__ . '/config/application.json'])
             ->enableProxyingToOriginalMethods()
             ->getMock();
 
-        /** @var EnvironmentConfig|MockObject $environmentConfig */
-        $environmentConfig = $this->getMockBuilder(EnvironmentConfig::class)
-            ->setConstructorArgs([['service' => ['debug' => '1']]])
+        /** @var EnvironmentJsonConfig|MockObject $environmentConfig */
+        $environmentConfig = $this->getMockBuilder(EnvironmentJsonConfig::class)
+            ->setConstructorArgs(array_fill(0, 3, __DIR__ . '/config/env_service.json'))
             ->enableProxyingToOriginalMethods()
             ->getMock();
 
@@ -99,8 +99,8 @@ class ConfigContainerTest extends BaseTest
     {
         $config = new ConfigContainer();
 
-        $applicationConfig = new ApplicationConfig(['name' => 'test']);
-        $environmentConfig = new EnvironmentConfig(['service' => ['debug' => '1']]);
+        $applicationConfig = new ApplicationJsonConfig(__DIR__ . '/config/application.json');
+        $environmentConfig = EnvironmentJsonConfig::createFromOneFile(__DIR__ . '/config/env_service.json');
 
         $config->setApplicationConfig($applicationConfig);
         $config->setEnvironmentConfig($environmentConfig);
@@ -113,8 +113,8 @@ class ConfigContainerTest extends BaseTest
     {
         $config = new ConfigContainer();
 
-        $applicationConfig = new ApplicationConfig(['name' => 'test']);
-        $environmentConfig = new EnvironmentConfig(['service' => ['debug' => '1']]);
+        $applicationConfig = new ApplicationJsonConfig(__DIR__ . '/config/application.json');
+        $environmentConfig = EnvironmentJsonConfig::createFromOneFile(__DIR__ . '/config/env_service.json');
 
         $config->setApplicationConfig($applicationConfig);
         $config->setEnvironmentConfig($environmentConfig);
@@ -127,8 +127,8 @@ class ConfigContainerTest extends BaseTest
     {
         $config = new ConfigContainer();
 
-        $applicationConfig = new ApplicationConfig(['name' => 'test']);
-        $environmentConfig = new EnvironmentConfig(['service' => ['debug' => '1']]);
+        $applicationConfig = new ApplicationJsonConfig(__DIR__ . '/config/application.json');
+        $environmentConfig = EnvironmentJsonConfig::createFromOneFile(__DIR__ . '/config/env_service.json');
 
         $config->setApplicationConfig($applicationConfig);
         $config->setEnvironmentConfig($environmentConfig);
@@ -142,13 +142,13 @@ class ConfigContainerTest extends BaseTest
     {
         $config = new ConfigContainer();
 
-        $applicationConfig = new ApplicationConfig(['name' => 'test 1']);
-        $environmentConfig = new EnvironmentConfig(['service' => ['name' => 'test 2']]);
+        $applicationConfig = new ApplicationJsonConfig(__DIR__ . '/config/application.json');
+        $environmentConfig = EnvironmentJsonConfig::createFromOneFile(__DIR__ . '/config/env_business.json');
 
         $config->setApplicationConfig($applicationConfig);
         $config->setEnvironmentConfig($environmentConfig);
 
-        $this->assertEquals('test 2', $config->getValue('name'));
+        $this->assertEquals('test business', $config->getValue('name'));
     }
 
 
@@ -156,12 +156,12 @@ class ConfigContainerTest extends BaseTest
     {
         $config = new ConfigContainer();
 
-        $applicationConfig = new ApplicationConfig(['name' => 'test 1']);
-        $environmentConfig = new EnvironmentConfig(['service' => ['name' => 'test 2']]);
+        $applicationConfig = new ApplicationJsonConfig(__DIR__ . '/config/application.json');
+        $environmentConfig = EnvironmentJsonConfig::createFromOneFile(__DIR__ . '/config/env_business.json');
 
         $config->setApplicationConfig($applicationConfig, 3);
         $config->setEnvironmentConfig($environmentConfig, 2);
 
-        $this->assertEquals('test 1', $config->getValue('name'));
+        $this->assertEquals('test', $config->getValue('name'));
     }
 }
