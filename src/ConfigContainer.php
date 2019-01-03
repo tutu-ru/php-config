@@ -145,7 +145,6 @@ class ConfigContainer
 
     private function setConfig(ConfigInterface $config, string $id, int $priority)
     {
-        $config->load();
         $this->configs[$id] = [
             self::CONFIGS_LIST_KEY_IMPLEMENTATION => $config,
             self::CONFIGS_LIST_KEY_PRIORITY       => $priority

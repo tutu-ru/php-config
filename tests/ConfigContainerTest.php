@@ -29,8 +29,8 @@ class ConfigContainerTest extends BaseTest
     {
         $config = new ConfigContainer();
 
-        $applicationConfig = new ApplicationJsonConfig(__DIR__ . '/config/application.json');
-        $environmentConfig = EnvironmentJsonConfig::createFromOneFile(__DIR__ . '/config/env_service.json');
+        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json');
+        $environmentConfig = $this->createEnvConfig(__DIR__ . '/config/env_service.json');
 
         $config->setApplicationConfig($applicationConfig);
         $config->setEnvironmentConfig($environmentConfig);
@@ -45,16 +45,10 @@ class ConfigContainerTest extends BaseTest
         $config = new ConfigContainer();
 
         /** @var ApplicationJsonConfig|MockObject $applicationConfig */
-        $applicationConfig = $this->getMockBuilder(ApplicationJsonConfig::class)
-            ->setConstructorArgs([__DIR__ . '/config/application.json'])
-            ->enableProxyingToOriginalMethods()
-            ->getMock();
+        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json', true);
 
         /** @var EnvironmentJsonConfig|MockObject $environmentConfig */
-        $environmentConfig = $this->getMockBuilder(EnvironmentJsonConfig::class)
-            ->setConstructorArgs(array_fill(0, 3, __DIR__ . '/config/env_service.json'))
-            ->enableProxyingToOriginalMethods()
-            ->getMock();
+        $environmentConfig = $this->createEnvConfig(__DIR__ . '/config/env_service.json', true);
 
         $config->setApplicationConfig($applicationConfig);
         $config->setEnvironmentConfig($environmentConfig);
@@ -72,16 +66,9 @@ class ConfigContainerTest extends BaseTest
         $config = new ConfigContainer();
 
         /** @var MutableApplicationJsonConfig|MockObject $applicationConfig */
-        $applicationConfig = $this->getMockBuilder(MutableApplicationJsonConfig::class)
-            ->setConstructorArgs([__DIR__ . '/config/application.json'])
-            ->enableProxyingToOriginalMethods()
-            ->getMock();
-
+        $applicationConfig = $this->createMutableAppConfig(__DIR__ . '/config/application.json', true);
         /** @var EnvironmentJsonConfig|MockObject $environmentConfig */
-        $environmentConfig = $this->getMockBuilder(EnvironmentJsonConfig::class)
-            ->setConstructorArgs(array_fill(0, 3, __DIR__ . '/config/env_service.json'))
-            ->enableProxyingToOriginalMethods()
-            ->getMock();
+        $environmentConfig = $this->createEnvConfig(__DIR__ . '/config/env_service.json', true);
 
         $config->setApplicationConfig($applicationConfig);
         $config->setEnvironmentConfig($environmentConfig);
@@ -99,8 +86,8 @@ class ConfigContainerTest extends BaseTest
     {
         $config = new ConfigContainer();
 
-        $applicationConfig = new ApplicationJsonConfig(__DIR__ . '/config/application.json');
-        $environmentConfig = EnvironmentJsonConfig::createFromOneFile(__DIR__ . '/config/env_service.json');
+        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json');
+        $environmentConfig = $this->createEnvConfig(__DIR__ . '/config/env_service.json');
 
         $config->setApplicationConfig($applicationConfig);
         $config->setEnvironmentConfig($environmentConfig);
@@ -113,8 +100,8 @@ class ConfigContainerTest extends BaseTest
     {
         $config = new ConfigContainer();
 
-        $applicationConfig = new ApplicationJsonConfig(__DIR__ . '/config/application.json');
-        $environmentConfig = EnvironmentJsonConfig::createFromOneFile(__DIR__ . '/config/env_service.json');
+        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json');
+        $environmentConfig = $this->createEnvConfig(__DIR__ . '/config/env_service.json');
 
         $config->setApplicationConfig($applicationConfig);
         $config->setEnvironmentConfig($environmentConfig);
@@ -127,8 +114,8 @@ class ConfigContainerTest extends BaseTest
     {
         $config = new ConfigContainer();
 
-        $applicationConfig = new ApplicationJsonConfig(__DIR__ . '/config/application.json');
-        $environmentConfig = EnvironmentJsonConfig::createFromOneFile(__DIR__ . '/config/env_service.json');
+        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json');
+        $environmentConfig = $this->createEnvConfig(__DIR__ . '/config/env_service.json');
 
         $config->setApplicationConfig($applicationConfig);
         $config->setEnvironmentConfig($environmentConfig);
@@ -142,8 +129,8 @@ class ConfigContainerTest extends BaseTest
     {
         $config = new ConfigContainer();
 
-        $applicationConfig = new ApplicationJsonConfig(__DIR__ . '/config/application.json');
-        $environmentConfig = EnvironmentJsonConfig::createFromOneFile(__DIR__ . '/config/env_business.json');
+        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json');
+        $environmentConfig = $this->createEnvConfig(__DIR__ . '/config/env_business.json');
 
         $config->setApplicationConfig($applicationConfig);
         $config->setEnvironmentConfig($environmentConfig);
@@ -156,8 +143,8 @@ class ConfigContainerTest extends BaseTest
     {
         $config = new ConfigContainer();
 
-        $applicationConfig = new ApplicationJsonConfig(__DIR__ . '/config/application.json');
-        $environmentConfig = EnvironmentJsonConfig::createFromOneFile(__DIR__ . '/config/env_business.json');
+        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json');
+        $environmentConfig = $this->createEnvConfig(__DIR__ . '/config/env_business.json');
 
         $config->setApplicationConfig($applicationConfig, 3);
         $config->setEnvironmentConfig($environmentConfig, 2);

@@ -10,8 +10,15 @@ class JsonConfigFactory
     public static function createConfig(string $appFilename, ?string $enfFilename = null): ConfigContainer
     {
         $config = new ConfigContainer();
-        $config->setApplicationConfig(new MutableApplicationJsonConfig($appFilename));
-        $config->setEnvironmentConfig(EnvironmentJsonConfig::createFromOneFile($enfFilename ?? $appFilename));
+
+        $appConfig = new MutableApplicationJsonConfig($appFilename);
+        $appConfig->load();
+        $config->setApplicationConfig($appConfig);
+
+        $envConfig = EnvironmentJsonConfig::createFromOneFile($enfFilename ?? $appFilename);
+        $envConfig->load();
+        $config->setEnvironmentConfig($envConfig);
+
         return $config;
     }
 }

@@ -14,7 +14,7 @@ class JsonConfigEnvironmentTest extends BaseTest
     public function testGetValueWithNotLoadedConfig()
     {
         $this->expectException(InvalidConfigExceptionInterface::class);
-        $environmentConfig = $this->createEnvironmentConfig();
+        $environmentConfig = $this->createEnvironmentConfig(false);
         $environmentConfig->getValue('test');
     }
 
@@ -22,7 +22,7 @@ class JsonConfigEnvironmentTest extends BaseTest
     public function testGetServiceValueWithNotLoadedConfig()
     {
         $this->expectException(InvalidConfigExceptionInterface::class);
-        $environmentConfig = $this->createEnvironmentConfig();
+        $environmentConfig = $this->createEnvironmentConfig(false);
         $environmentConfig->getServiceValue('test');
     }
 
@@ -30,7 +30,7 @@ class JsonConfigEnvironmentTest extends BaseTest
     public function testGetBusinessValueWithNotLoadedConfig()
     {
         $this->expectException(InvalidConfigExceptionInterface::class);
-        $environmentConfig = $this->createEnvironmentConfig();
+        $environmentConfig = $this->createEnvironmentConfig(false);
         $environmentConfig->getBusinessValue('test');
     }
 
@@ -38,7 +38,7 @@ class JsonConfigEnvironmentTest extends BaseTest
     public function testGetInfrastructureValueWithNotLoadedConfig()
     {
         $this->expectException(InvalidConfigExceptionInterface::class);
-        $environmentConfig = $this->createEnvironmentConfig();
+        $environmentConfig = $this->createEnvironmentConfig(false);
         $environmentConfig->getInfrastructureValue('test');
     }
 
@@ -241,12 +241,16 @@ class JsonConfigEnvironmentTest extends BaseTest
     }
 
 
-    private function createEnvironmentConfig()
+    private function createEnvironmentConfig($loaded = true)
     {
-        return new EnvironmentJsonConfig(
+        $config = new EnvironmentJsonConfig(
             __DIR__ . '/config/env_service.json',
             __DIR__ . '/config/env_business.json',
             __DIR__ . '/config/env_infra.json'
         );
+        if ($loaded) {
+            $config->load();
+        }
+        return $config;
     }
 }

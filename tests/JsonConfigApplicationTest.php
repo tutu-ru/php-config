@@ -7,15 +7,13 @@ use TutuRu\Config\ConfigContainer;
 use TutuRu\Config\Exceptions\ConfigPathNotExistExceptionInterface;
 use TutuRu\Config\Exceptions\ConfigUpdateForbiddenExceptionInterface;
 use TutuRu\Config\Exceptions\InvalidConfigExceptionInterface;
-use TutuRu\Tests\Config\JsonConfig\ApplicationJsonConfig;
-use TutuRu\Tests\Config\JsonConfig\MutableApplicationJsonConfig;
 
 class JsonConfigApplicationTest extends BaseTest
 {
     public function testInitializeWithApplicationConfig()
     {
         $config = new ConfigContainer();
-        $applicationConfig = new ApplicationJsonConfig(__DIR__ . '/config/application.json');
+        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json');
         $config->setApplicationConfig($applicationConfig);
 
         $this->assertSame($applicationConfig, $config->getApplicationConfig());
@@ -34,7 +32,7 @@ class JsonConfigApplicationTest extends BaseTest
     public function testGetValue()
     {
         $config = new ConfigContainer();
-        $applicationConfig = new ApplicationJsonConfig(__DIR__ . '/config/application.json');
+        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json');
         $config->setApplicationConfig($applicationConfig);
 
         $this->assertEquals('test', $config->getApplicationValue('name'));
@@ -44,7 +42,7 @@ class JsonConfigApplicationTest extends BaseTest
     public function testGetValueNotExist()
     {
         $config = new ConfigContainer();
-        $applicationConfig = new ApplicationJsonConfig(__DIR__ . '/config/application.json');
+        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json');
         $config->setApplicationConfig($applicationConfig);
 
         $this->assertEquals(null, $config->getApplicationValue('not_existing_value'));
@@ -54,7 +52,7 @@ class JsonConfigApplicationTest extends BaseTest
     public function testGetValueNotExistWithDefault()
     {
         $config = new ConfigContainer();
-        $applicationConfig = new ApplicationJsonConfig(__DIR__ . '/config/application.json');
+        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json');
         $config->setApplicationConfig($applicationConfig);
 
         $this->assertEquals('default', $config->getApplicationValue('not_existing_value', 'default'));
@@ -64,7 +62,7 @@ class JsonConfigApplicationTest extends BaseTest
     public function testGetValueNotExistButRequired()
     {
         $config = new ConfigContainer();
-        $applicationConfig = new ApplicationJsonConfig(__DIR__ . '/config/application.json');
+        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json');
         $config->setApplicationConfig($applicationConfig);
 
         $this->expectException(ConfigPathNotExistExceptionInterface::class);
@@ -75,7 +73,7 @@ class JsonConfigApplicationTest extends BaseTest
     public function testGetValueArray()
     {
         $config = new ConfigContainer();
-        $applicationConfig = new ApplicationJsonConfig(__DIR__ . '/config/application.json');
+        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json');
         $config->setApplicationConfig($applicationConfig);
 
         $this->assertEquals(['one' => 1, 'two' => 2], $config->getApplicationValue('array'));
@@ -85,7 +83,7 @@ class JsonConfigApplicationTest extends BaseTest
     public function testSetValue()
     {
         $config = new ConfigContainer();
-        $applicationConfig = new ApplicationJsonConfig(__DIR__ . '/config/application.json');
+        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json');
         $config->setApplicationConfig($applicationConfig);
 
         $this->expectException(ConfigUpdateForbiddenExceptionInterface::class);
@@ -99,7 +97,7 @@ class JsonConfigApplicationTest extends BaseTest
     public function testSetValueWithMutableConfig($value)
     {
         $config = new ConfigContainer();
-        $applicationConfig = new MutableApplicationJsonConfig(__DIR__ . '/config/application.json');
+        $applicationConfig = $this->createMutableAppConfig(__DIR__ . '/config/application.json');
         $config->setApplicationConfig($applicationConfig);
 
         $config->setApplicationValue('name', $value);
@@ -113,7 +111,7 @@ class JsonConfigApplicationTest extends BaseTest
     public function testSetValueWithMutableConfigForNewNode($value)
     {
         $config = new ConfigContainer();
-        $applicationConfig = new MutableApplicationJsonConfig(__DIR__ . '/config/application.json');
+        $applicationConfig = $this->createMutableAppConfig(__DIR__ . '/config/application.json');
         $config->setApplicationConfig($applicationConfig);
 
         $config->setApplicationValue('new.node', $value);
