@@ -47,7 +47,7 @@ class ConfigContainer
     }
 
 
-    public function getValue(string $path, $defaultValue = null, bool $required = false)
+    public function getValue(string $path, bool $required = false, $defaultValue = null)
     {
         if (array_key_exists($path, $this->runtimeCache)) {
             return $this->runtimeCache[$path];
@@ -82,7 +82,7 @@ class ConfigContainer
     }
 
 
-    public function getApplicationValue(string $path, $defaultValue = null, bool $required = false)
+    public function getApplicationValue(string $path, bool $required = false, $defaultValue = null)
     {
         $this->checkApplicationConfig();
         $value = $this->getApplicationConfig()->getValue($path);
@@ -90,7 +90,7 @@ class ConfigContainer
     }
 
 
-    public function getEnvironmentValue(string $path, $defaultValue = null, bool $required = false)
+    public function getEnvironmentValue(string $path, bool $required = false, $defaultValue = null)
     {
         $this->checkEnvironmentConfig();
         $value = $this->getEnvironmentConfig()->getValue($path);
@@ -98,7 +98,7 @@ class ConfigContainer
     }
 
 
-    public function getEnvironmentServiceValue(string $path, $defaultValue = null, bool $required = false)
+    public function getEnvironmentServiceValue(string $path, bool $required = false, $defaultValue = null)
     {
         $this->checkEnvironmentConfig();
         $value = $this->getEnvironmentConfig()->getServiceValue($path);
@@ -106,7 +106,7 @@ class ConfigContainer
     }
 
 
-    public function getEnvironmentBusinessValue(string $path, $defaultValue = null, bool $required = false)
+    public function getEnvironmentBusinessValue(string $path, bool $required = false, $defaultValue = null)
     {
         $this->checkEnvironmentConfig();
         $value = $this->getEnvironmentConfig()->getBusinessValue($path);
@@ -114,7 +114,7 @@ class ConfigContainer
     }
 
 
-    public function getEnvironmentInfrastructureValue(string $path, $defaultValue = null, bool $required = false)
+    public function getEnvironmentInfrastructureValue(string $path, bool $required = false, $defaultValue = null)
     {
         $this->checkEnvironmentConfig();
         $value = $this->getEnvironmentConfig()->getInfrastructureValue($path);

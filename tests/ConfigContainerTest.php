@@ -106,7 +106,7 @@ class ConfigContainerTest extends BaseTest
         $config->setApplicationConfig($applicationConfig);
         $config->setEnvironmentConfig($environmentConfig);
 
-        $this->assertEquals('default', $config->getValue('not_exist', 'default'));
+        $this->assertEquals('default', $config->getValue('not_exist', false, 'default'));
     }
 
 
@@ -121,7 +121,7 @@ class ConfigContainerTest extends BaseTest
         $config->setEnvironmentConfig($environmentConfig);
 
         $this->expectException(ConfigPathNotExistExceptionInterface::class);
-        $config->getValue('not_exist', null, true);
+        $config->getValue('not_exist', true);
     }
 
 

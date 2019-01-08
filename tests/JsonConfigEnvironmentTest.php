@@ -148,10 +148,13 @@ class JsonConfigEnvironmentTest extends BaseTest
         $environmentConfig = $this->createEnvironmentConfig();
         $config->setEnvironmentConfig($environmentConfig);
 
-        $this->assertEquals('default', $config->getEnvironmentValue('not_existing_value', 'default'));
-        $this->assertEquals('default', $config->getEnvironmentServiceValue('not_existing_value', 'default'));
-        $this->assertEquals('default', $config->getEnvironmentBusinessValue('not_existing_value', 'default'));
-        $this->assertEquals('default', $config->getEnvironmentInfrastructureValue('not_existing_value', 'default'));
+        $this->assertEquals('default', $config->getEnvironmentValue('not_existing_value', false, 'default'));
+        $this->assertEquals('default', $config->getEnvironmentServiceValue('not_existing_value', false, 'default'));
+        $this->assertEquals('default', $config->getEnvironmentBusinessValue('not_existing_value', false, 'default'));
+        $this->assertEquals(
+            'default',
+            $config->getEnvironmentInfrastructureValue('not_existing_value', false, 'default')
+        );
     }
 
 
@@ -162,7 +165,7 @@ class JsonConfigEnvironmentTest extends BaseTest
         $config->setEnvironmentConfig($environmentConfig);
 
         $this->expectException(ConfigPathNotExistExceptionInterface::class);
-        $config->getEnvironmentValue('not_existing_value', 'default', true);
+        $config->getEnvironmentValue('not_existing_value', true, 'default');
     }
 
 
@@ -173,7 +176,7 @@ class JsonConfigEnvironmentTest extends BaseTest
         $config->setEnvironmentConfig($environmentConfig);
 
         $this->expectException(ConfigPathNotExistExceptionInterface::class);
-        $config->getEnvironmentServiceValue('not_existing_value', 'default', true);
+        $config->getEnvironmentServiceValue('not_existing_value', true, 'default');
     }
 
 
@@ -184,7 +187,7 @@ class JsonConfigEnvironmentTest extends BaseTest
         $config->setEnvironmentConfig($environmentConfig);
 
         $this->expectException(ConfigPathNotExistExceptionInterface::class);
-        $config->getEnvironmentBusinessValue('not_existing_value', 'default', true);
+        $config->getEnvironmentBusinessValue('not_existing_value', true, 'default');
     }
 
 
@@ -195,7 +198,7 @@ class JsonConfigEnvironmentTest extends BaseTest
         $config->setEnvironmentConfig($environmentConfig);
 
         $this->expectException(ConfigPathNotExistExceptionInterface::class);
-        $config->getEnvironmentInfrastructureValue('not_existing_value', 'default', true);
+        $config->getEnvironmentInfrastructureValue('not_existing_value', true, 'default');
     }
 
 

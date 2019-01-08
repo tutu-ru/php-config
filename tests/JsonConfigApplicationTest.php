@@ -55,7 +55,7 @@ class JsonConfigApplicationTest extends BaseTest
         $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json');
         $config->setApplicationConfig($applicationConfig);
 
-        $this->assertEquals('default', $config->getApplicationValue('not_existing_value', 'default'));
+        $this->assertEquals('default', $config->getApplicationValue('not_existing_value', false, 'default'));
     }
 
 
@@ -66,7 +66,7 @@ class JsonConfigApplicationTest extends BaseTest
         $config->setApplicationConfig($applicationConfig);
 
         $this->expectException(ConfigPathNotExistExceptionInterface::class);
-        $config->getApplicationValue('not_existing_value', 'default', true);
+        $config->getApplicationValue('not_existing_value', true, 'default');
     }
 
 
