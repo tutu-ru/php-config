@@ -20,7 +20,7 @@ class ConfigContainer
     /** @var ConfigInterface[] */
     private $prioritizedConfigsList = [];
 
-    private $runtimeCache = [];
+    protected $runtimeCache = [];
 
 
     public function setApplicationConfig(ApplicationConfigInterface $applicationConfig, int $priority = 0)
