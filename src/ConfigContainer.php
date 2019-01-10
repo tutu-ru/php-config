@@ -18,21 +18,6 @@ class ConfigContainer implements ConfigInterface
 
     private $runtimeCache = [];
 
-    /** @var bool */
-    private $useArrayValuesMerging;
-
-
-    public function __construct($mergeArrayValues = true)
-    {
-        $this->useArrayValuesMerging = $mergeArrayValues;
-    }
-
-
-    public function useArrayValuesMerging(bool $useArrayValuesMerging)
-    {
-        $this->useArrayValuesMerging = $useArrayValuesMerging;
-    }
-
 
     public function getConfig(string $id): ?ConfigInterface
     {
@@ -60,7 +45,13 @@ class ConfigContainer implements ConfigInterface
             throw new InvalidConfigException("No initialized configs");
         }
 
-        $value = $this->useArrayValuesMerging ? $this->getValueWithMergedArray($path) : $this->getSimpleValue($path);
+        $value = null;
+        foreach ($this->prioritizedConfigsList as $config) {
+            $value = $config->getValue($path);
+            if (!is_null($value)) {
+                break;
+            }
+        }
 
         if ($required && is_null($value)) {
             throw new PathNotExistsException($path);
@@ -81,32 +72,6 @@ class ConfigContainer implements ConfigInterface
     }
 
 
-    private function getSimpleValue(string $path)
-    {
-        $value = null;
-        foreach ($this->prioritizedConfigsList as $config) {
-            $value = $config->getValue($path);
-            if (!is_null($value)) {
-                break;
-            }
-        }
-        return $value;
-    }
-
-
-    private function getValueWithMergedArray(string $path)
-    {
-        $value = null;
-        foreach (array_reverse($this->prioritizedConfigsList) as $config) {
-            $result = $config->getValue($path);
-            if (!is_null($result)) {
-                $value = is_array($value) ? $this->mergeConfig($value, (array)$result) : $result;
-            }
-        }
-        return $value;
-    }
-
-
     private function buildPrioritizedConfigList()
     {
         uasort(
@@ -119,26 +84,5 @@ class ConfigContainer implements ConfigInterface
         foreach ($this->configs as $configData) {
             $this->prioritizedConfigsList[] = $configData[self::CONFIGS_LIST_KEY_IMPLEMENTATION];
         }
-    }
-
-
-    private function mergeConfig(array $array1, array $array2): array
-    {
-        // Merge two arrays recursive. If first and second array have the same key second overwrite first.
-        $merged = $array1;
-        if (is_array($array2)) {
-            foreach ($array2 as $key => $val) {
-                if (is_array($array2[$key])) {
-                    if (isset($merged[$key]) && is_array($merged[$key])) {
-                        $merged[$key] = $this->mergeConfig($merged[$key], $array2[$key]);
-                    } else {
-                        $merged[$key] = $array2[$key];
-                    }
-                } else {
-                    $merged[$key] = $val;
-                }
-            }
-        }
-        return $merged;
     }
 }

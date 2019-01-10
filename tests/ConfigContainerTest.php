@@ -126,24 +126,6 @@ class ConfigContainerTest extends BaseTest
     }
 
 
-    public function testArrayMerging()
-    {
-        $config = $this->createDefaultConfigContainer();
-        $this->assertEquals(
-            ['one' => 1, 'two' => 2, 'three' => 3, 'sub_array' => ['x', 'y' => 'z']],
-            $config->getValue('array')
-        );
-    }
-
-
-    public function testDisabledArrayMerging()
-    {
-        $config = $this->createDefaultConfigContainer();
-        $config->useArrayValuesMerging(false);
-        $this->assertEquals(['three' => 3, 'sub_array' => ['x']], $config->getValue('array'));
-    }
-
-
     public function testPriorities()
     {
         $config = $this->createDefaultConfigContainer();
