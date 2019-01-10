@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace TutuRu\Config;
 
-use TutuRu\Config\ContainerExceptions\PathNotExistsException;
-use TutuRu\Config\ContainerExceptions\InvalidConfigException;
+use TutuRu\Config\ContainerException\PathNotExistsException;
+use TutuRu\Config\ContainerException\InvalidConfigException;
 
 class ConfigContainer implements ConfigInterface
 {
