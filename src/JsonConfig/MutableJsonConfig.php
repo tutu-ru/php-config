@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace TutuRu\Tests\Config\JsonConfig;
+namespace TutuRu\Config\JsonConfig;
 
 use TutuRu\Config\MutableConfigInterface;
 

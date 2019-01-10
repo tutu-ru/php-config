@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace TutuRu\Tests\Config\JsonConfig;
+namespace TutuRu\Config\JsonConfig;
 
 use TutuRu\Config\ConfigInterface;
 use TutuRu\Config\ConfigDataStorageTrait;
@@ -25,7 +25,7 @@ class JsonConfig implements ConfigInterface
     {
         $value = $this->getConfigData($path);
         if ($required && is_null($value)) {
-            throw new JsonConfigException("Path {$path} not exists in config");
+            throw new JsonConfigPathNotExistException("Path {$path} not exists in config");
         }
         return $value ?? $defaultValue;
     }
@@ -34,12 +34,12 @@ class JsonConfig implements ConfigInterface
     private function load()
     {
         if (!file_exists($this->filename) || !is_readable($this->filename)) {
-            throw new JsonConfigException("{$this->filename} not exists or not readable");
+            throw new JsonConfigInvalidException("{$this->filename} not exists or not readable");
         }
         $json = json_decode(file_get_contents($this->filename), true);
         $error = json_last_error();
         if ($error !== JSON_ERROR_NONE) {
-            throw new JsonConfigException("JSON error in {$this->filename}: " . json_last_error_msg(), $error);
+            throw new JsonConfigInvalidException("JSON error in {$this->filename}: " . json_last_error_msg(), $error);
         }
         $this->data = $json;
     }

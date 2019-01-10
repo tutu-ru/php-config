@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace TutuRu\Tests\Config;
 
 use PHPUnit\Framework\TestCase;
-use TutuRu\Tests\Config\JsonConfig\JsonConfig;
-use TutuRu\Tests\Config\JsonConfig\MutableJsonConfig;
+use TutuRu\Config\JsonConfig\JsonConfig;
+use TutuRu\Config\JsonConfig\MutableJsonConfig;
 
 abstract class BaseTest extends TestCase
 {
