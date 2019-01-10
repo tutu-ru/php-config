@@ -3,152 +3,163 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\Config;
 
-use PHPUnit\Framework\MockObject\MockObject;
 use TutuRu\Config\ConfigContainer;
-use TutuRu\Config\Exceptions\ConfigPathNotExistExceptionInterface;
-use TutuRu\Config\Exceptions\InvalidConfigExceptionInterface;
-use TutuRu\Tests\Config\JsonConfig\ApplicationJsonConfig;
-use TutuRu\Tests\Config\JsonConfig\EnvironmentJsonConfig;
-use TutuRu\Tests\Config\JsonConfig\MutableApplicationJsonConfig;
+use TutuRu\Config\Exception\ConfigPathNotExistExceptionInterface;
+use TutuRu\Config\Exception\InvalidConfigExceptionInterface;
 
 class ConfigContainerTest extends BaseTest
 {
-    public function testNotInitializedConfig()
+    public function testSetAndGetConfig()
     {
         $config = new ConfigContainer();
+        $this->assertNull($config->getConfig('app'));
+        $this->assertNull($config->getConfig('env'));
 
-        $this->assertNull($config->getApplicationConfig());
-        $this->assertNull($config->getEnvironmentConfig());
+        $applicationConfig = $this->createJsonConfig(__DIR__ . '/config/app.json');
+        $config->setConfig('app', $applicationConfig, 0);
 
+        $this->assertSame($applicationConfig, $config->getConfig('app'));
+        $this->assertNull($config->getConfig('env'));
+    }
+
+
+    public function testReplaceConfig()
+    {
+        $config = new ConfigContainer();
+        $config1 = $this->createJsonConfig(__DIR__ . '/config/app.json');
+        $config2 = $this->createJsonConfig(__DIR__ . '/config/app.json');
+
+        $config->setConfig('app', $config1, 0);
+        $config->setConfig('app', $config2, 1);
+
+        $this->assertSame($config2, $config->getConfig('app'));
+    }
+
+
+    public function testGetValueWithNotInitializedConfig()
+    {
+        $config = new ConfigContainer();
         $this->expectException(InvalidConfigExceptionInterface::class);
-        $this->assertNull($config->getValue('some.node'));
+        $config->getValue('test');
     }
 
 
     public function testGetValue()
     {
-        $config = new ConfigContainer();
-
-        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json');
-        $environmentConfig = $this->createEnvConfig(__DIR__ . '/config/env_service.json');
-
-        $config->setApplicationConfig($applicationConfig);
-        $config->setEnvironmentConfig($environmentConfig);
-
+        $config = $this->createDefaultConfigContainer();
         $this->assertEquals('test', $config->getValue('name'));
         $this->assertEquals('1', $config->getValue('debug'));
     }
 
 
-    public function testGetValueRuntimeCache()
+    public function testGetValueWithNotExistingPath()
     {
-        $config = new ConfigContainer();
-
-        /** @var ApplicationJsonConfig|MockObject $applicationConfig */
-        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json', true);
-
-        /** @var EnvironmentJsonConfig|MockObject $environmentConfig */
-        $environmentConfig = $this->createEnvConfig(__DIR__ . '/config/env_service.json', true);
-
-        $config->setApplicationConfig($applicationConfig);
-        $config->setEnvironmentConfig($environmentConfig);
-
-        $applicationConfig->expects($this->exactly(1))->method('getValue');
-        $environmentConfig->expects($this->exactly(1))->method('getValue');
-
-        $config->getValue('name');
-        $config->getValue('name');
-    }
-
-
-    public function testGetValueRuntimeCacheReset()
-    {
-        $config = new ConfigContainer();
-
-        /** @var MutableApplicationJsonConfig|MockObject $applicationConfig */
-        $applicationConfig = $this->createMutableAppConfig(__DIR__ . '/config/application.json', true);
-        /** @var EnvironmentJsonConfig|MockObject $environmentConfig */
-        $environmentConfig = $this->createEnvConfig(__DIR__ . '/config/env_service.json', true);
-
-        $config->setApplicationConfig($applicationConfig);
-        $config->setEnvironmentConfig($environmentConfig);
-
-        $applicationConfig->expects($this->exactly(2))->method('getValue');
-        $environmentConfig->expects($this->exactly(2))->method('getValue');
-
-        $config->getValue('name');
-        $config->setApplicationValue('name', 'new value');
-        $config->getValue('name');
-    }
-
-
-    public function testGetValueNotExist()
-    {
-        $config = new ConfigContainer();
-
-        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json');
-        $environmentConfig = $this->createEnvConfig(__DIR__ . '/config/env_service.json');
-
-        $config->setApplicationConfig($applicationConfig);
-        $config->setEnvironmentConfig($environmentConfig);
-
+        $config = $this->createDefaultConfigContainer();
         $this->assertEquals(null, $config->getValue('not_exist'));
     }
 
 
-    public function testGetValueNotExistWithDefault()
+    public function testGetValueWithDefault()
     {
-        $config = new ConfigContainer();
-
-        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json');
-        $environmentConfig = $this->createEnvConfig(__DIR__ . '/config/env_service.json');
-
-        $config->setApplicationConfig($applicationConfig);
-        $config->setEnvironmentConfig($environmentConfig);
-
-        $this->assertEquals('default', $config->getValue('not_exist', false, 'default'));
+        $config = $this->createDefaultConfigContainer();
+        $this->assertEquals('test', $config->getValue('name', 'default'));
     }
 
 
-    public function testGetValueNotExistWithRequired()
+    public function testGetValueWithNotExistingPathAndDefault()
     {
-        $config = new ConfigContainer();
+        $config = $this->createDefaultConfigContainer();
+        $this->assertEquals('default', $config->getValue('not_exist', 'default'));
+    }
 
-        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json');
-        $environmentConfig = $this->createEnvConfig(__DIR__ . '/config/env_service.json');
 
-        $config->setApplicationConfig($applicationConfig);
-        $config->setEnvironmentConfig($environmentConfig);
+    public function testGetRequiredValue()
+    {
+        $config = $this->createDefaultConfigContainer();
+        $this->assertEquals('test', $config->getRequiredValue('name'));
+    }
 
+
+    public function testGetRequiredValueWithNotExistingPath()
+    {
+        $config = $this->createDefaultConfigContainer();
         $this->expectException(ConfigPathNotExistExceptionInterface::class);
-        $config->getValue('not_exist', true);
+        $config->getRequiredValue('not_exist');
     }
 
 
-    public function testDefaultPriorities()
+    public function testRuntimeCache()
     {
-        $config = new ConfigContainer();
+        $config = $this->createDefaultConfigContainer(true);
 
-        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json');
-        $environmentConfig = $this->createEnvConfig(__DIR__ . '/config/env_business.json');
+        $config->getConfig('app')->expects($this->exactly(1))->method('getValue');
+        $config->getConfig('env')->expects($this->exactly(1))->method('getValue');
 
-        $config->setApplicationConfig($applicationConfig);
-        $config->setEnvironmentConfig($environmentConfig);
-
-        $this->assertEquals('test business', $config->getValue('name'));
+        $config->getValue('name');
+        $config->getValue('name');
     }
 
 
-    public function testCustomPriorities()
+    public function testRuntimeCacheReset()
+    {
+        $config = $this->createDefaultConfigContainer(true);
+
+        $config->getConfig('app')->expects($this->exactly(2))->method('getValue');
+        $config->getConfig('env')->expects($this->exactly(2))->method('getValue');
+
+        $config->getValue('name');
+        $config->resetRuntimeCache();
+        $config->getValue('name');
+    }
+
+
+    public function testRuntimeCacheResetOnSetConfig()
+    {
+        $config = $this->createDefaultConfigContainer(true);
+
+        $config->getConfig('app')->expects($this->exactly(2))->method('getValue');
+        $config->getConfig('env')->expects($this->exactly(2))->method('getValue');
+
+        $config->getValue('name');
+        $config->setConfig('app', $config->getConfig('app'), 0);
+        $config->getValue('name');
+    }
+
+
+    public function testArrayMerging()
+    {
+        $config = $this->createDefaultConfigContainer();
+        $this->assertEquals(
+            ['one' => 1, 'two' => 2, 'three' => 3, 'sub_array' => ['x', 'y' => 'z']],
+            $config->getValue('array')
+        );
+    }
+
+
+    public function testDisabledArrayMerging()
+    {
+        $config = $this->createDefaultConfigContainer();
+        $config->useArrayValuesMerging(false);
+        $this->assertEquals(['three' => 3, 'sub_array' => ['x']], $config->getValue('array'));
+    }
+
+
+    public function testPriorities()
+    {
+        $config = $this->createDefaultConfigContainer();
+        $this->assertEquals('env', $config->getValue('priority'));
+        $config->setConfig('app', $config->getConfig('app'), 2);
+        $this->assertEquals('app', $config->getValue('priority'));
+    }
+
+
+    private function createDefaultConfigContainer(bool $useMocks = false): ConfigContainer
     {
         $config = new ConfigContainer();
-
-        $applicationConfig = $this->createAppConfig(__DIR__ . '/config/application.json');
-        $environmentConfig = $this->createEnvConfig(__DIR__ . '/config/env_business.json');
-
-        $config->setApplicationConfig($applicationConfig, 3);
-        $config->setEnvironmentConfig($environmentConfig, 2);
-
-        $this->assertEquals('test', $config->getValue('name'));
+        $applicationConfig = $this->createJsonConfig(__DIR__ . '/config/app.json', $useMocks);
+        $environmentConfig = $this->createJsonConfig(__DIR__ . '/config/env.json', $useMocks);
+        $config->setConfig('app', $applicationConfig, 0);
+        $config->setConfig('env', $environmentConfig, 1);
+        return $config;
     }
 }

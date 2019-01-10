@@ -1,0 +1,11 @@
+{
+  "name": "test",
+  "array": {
+    "one": 1,
+    "two": 2,
+    "sub_array": {
+      "y": "z"
+    }
+  },
+  "priority": "app"
+}

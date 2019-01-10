@@ -4,53 +4,35 @@ declare(strict_types=1);
 namespace TutuRu\Tests\Config;
 
 use PHPUnit\Framework\TestCase;
-use TutuRu\Tests\Config\JsonConfig\ApplicationJsonConfig;
-use TutuRu\Tests\Config\JsonConfig\EnvironmentJsonConfig;
-use TutuRu\Tests\Config\JsonConfig\MutableApplicationJsonConfig;
+use TutuRu\Tests\Config\JsonConfig\JsonConfig;
+use TutuRu\Tests\Config\JsonConfig\MutableJsonConfig;
 
 abstract class BaseTest extends TestCase
 {
-    protected function createAppConfig(string $filename, bool $mock = false): ApplicationJsonConfig
+    protected function createJsonConfig(string $filename, bool $mock = false): JsonConfig
     {
         if ($mock) {
-            $applicationConfig = $this->getMockBuilder(ApplicationJsonConfig::class)
+            $config = $this->getMockBuilder(JsonConfig::class)
                 ->setConstructorArgs([$filename])
                 ->enableProxyingToOriginalMethods()
                 ->getMock();
         } else {
-            $applicationConfig = new ApplicationJsonConfig($filename);
+            $config = new JsonConfig($filename);
         }
-        $applicationConfig->load();
-        return $applicationConfig;
+        return $config;
     }
 
 
-    protected function createMutableAppConfig(string $filename, bool $mock = false): MutableApplicationJsonConfig
+    protected function createMutableConfig(string $filename, bool $mock = false): MutableJsonConfig
     {
         if ($mock) {
-            $applicationConfig = $this->getMockBuilder(MutableApplicationJsonConfig::class)
+            $config = $this->getMockBuilder(MutableJsonConfig::class)
                 ->setConstructorArgs([$filename])
                 ->enableProxyingToOriginalMethods()
                 ->getMock();
         } else {
-            $applicationConfig = new MutableApplicationJsonConfig($filename);
+            $config = new MutableJsonConfig($filename);
         }
-        $applicationConfig->load();
-        return $applicationConfig;
-    }
-
-
-    protected function createEnvConfig(string $filename, bool $mock = false): EnvironmentJsonConfig
-    {
-        if ($mock) {
-            $environmentConfig = $this->getMockBuilder(EnvironmentJsonConfig::class)
-                ->setConstructorArgs(array_fill(0, 3, $filename))
-                ->enableProxyingToOriginalMethods()
-                ->getMock();
-        } else {
-            $environmentConfig = EnvironmentJsonConfig::createFromOneFile($filename);
-        }
-        $environmentConfig->load();
-        return $environmentConfig;
+        return $config;
     }
 }
