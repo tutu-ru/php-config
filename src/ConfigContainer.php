@@ -51,7 +51,7 @@ class ConfigContainer implements ConfigInterface
     }
 
 
-    public function getValue(string $path, $defaultValue = null)
+    public function getValue(string $path, bool $required = false, $defaultValue = null)
     {
         if (array_key_exists($path, $this->runtimeCache)) {
             return $this->runtimeCache[$path];
@@ -62,22 +62,16 @@ class ConfigContainer implements ConfigInterface
 
         $value = $this->useArrayValuesMerging ? $this->getValueWithMergedArray($path) : $this->getSimpleValue($path);
 
+        if ($required && is_null($value)) {
+            throw new PathNotExistsException($path);
+        }
+
         if (!is_null($value)) {
             $this->runtimeCache[$path] = $value;
             return $value;
         } else {
             return $defaultValue;
         }
-    }
-
-
-    public function getRequiredValue(string $path)
-    {
-        $value = $this->getValue($path);
-        if (is_null($value)) {
-            throw new PathNotExistsException("Path {$path} not exists in config");
-        }
-        return $value;
     }
 
 

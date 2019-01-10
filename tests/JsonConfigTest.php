@@ -39,21 +39,21 @@ class JsonConfigTest extends BaseTest
     public function testGetValueWithDefault()
     {
         $config = $this->createJsonConfig(__DIR__ . '/config/app.json');
-        $this->assertEquals('test', $config->getValue('name', 'default'));
+        $this->assertEquals('test', $config->getValue('name', false, 'default'));
     }
 
 
     public function testGetValueWithNotExistingPathAndDefault()
     {
         $config = $this->createJsonConfig(__DIR__ . '/config/app.json');
-        $this->assertEquals('default', $config->getValue('not_existing_value', 'default'));
+        $this->assertEquals('default', $config->getValue('not_existing_value', false, 'default'));
     }
 
 
     public function testGetRequiredValue()
     {
         $config = $this->createJsonConfig(__DIR__ . '/config/app.json');
-        $this->assertEquals('test', $config->getRequiredValue('name'));
+        $this->assertEquals('test', $config->getValue('name', true));
     }
 
 
@@ -61,7 +61,7 @@ class JsonConfigTest extends BaseTest
     {
         $config = $this->createJsonConfig(__DIR__ . '/config/app.json');
         $this->expectException(ConfigPathNotExistExceptionInterface::class);
-        $config->getRequiredValue('not_existing_value');
+        $config->getValue('not_existing_value', true);
     }
 
 

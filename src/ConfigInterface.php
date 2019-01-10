@@ -11,21 +11,13 @@ interface ConfigInterface
 
     /**
      * @param string $path
+     * @param bool   $required
      * @param mixed  $defaultValue
-     *
-     * @throws Exception\InvalidConfigExceptionInterface
-     *
-     * @return mixed
-     */
-    public function getValue(string $path, $defaultValue = null);
-
-    /**
-     * @param string $path
      *
      * @throws Exception\InvalidConfigExceptionInterface
      * @throws Exception\ConfigPathNotExistExceptionInterface
      *
      * @return mixed
      */
-    public function getRequiredValue(string $path);
+    public function getValue(string $path, bool $required = false, $defaultValue = null);
 }

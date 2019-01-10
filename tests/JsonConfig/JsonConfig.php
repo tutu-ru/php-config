@@ -21,19 +21,13 @@ class JsonConfig implements ConfigInterface
     }
 
 
-    public function getValue(string $path, $defaultValue = null)
+    public function getValue(string $path, bool $required = false, $defaultValue = null)
     {
-        return $this->getConfigData($path) ?? $defaultValue;
-    }
-
-
-    public function getRequiredValue(string $path)
-    {
-        $value = $this->getValue($path);
-        if (is_null($value)) {
+        $value = $this->getConfigData($path);
+        if ($required && is_null($value)) {
             throw new JsonConfigException("Path {$path} not exists in config");
         }
-        return $value;
+        return $value ?? $defaultValue;
     }
 
 

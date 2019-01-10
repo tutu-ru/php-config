@@ -62,21 +62,21 @@ class ConfigContainerTest extends BaseTest
     public function testGetValueWithDefault()
     {
         $config = $this->createDefaultConfigContainer();
-        $this->assertEquals('test', $config->getValue('name', 'default'));
+        $this->assertEquals('test', $config->getValue('name', false, 'default'));
     }
 
 
     public function testGetValueWithNotExistingPathAndDefault()
     {
         $config = $this->createDefaultConfigContainer();
-        $this->assertEquals('default', $config->getValue('not_exist', 'default'));
+        $this->assertEquals('default', $config->getValue('not_exist', false, 'default'));
     }
 
 
     public function testGetRequiredValue()
     {
         $config = $this->createDefaultConfigContainer();
-        $this->assertEquals('test', $config->getRequiredValue('name'));
+        $this->assertEquals('test', $config->getValue('name', true));
     }
 
 
@@ -84,7 +84,7 @@ class ConfigContainerTest extends BaseTest
     {
         $config = $this->createDefaultConfigContainer();
         $this->expectException(ConfigPathNotExistExceptionInterface::class);
-        $config->getRequiredValue('not_exist');
+        $config->getValue('not_exist', true);
     }
 
 
