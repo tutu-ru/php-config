@@ -10,7 +10,7 @@ class MutableJsonConfigTest extends BaseTest
      */
     public function testSetValueWithMutableConfig($value)
     {
-        $config = $this->createMutableConfig(__DIR__ . '/config/app.json');
+        $config = $this->createMutableJsonConfig(__DIR__ . '/config/app.json');
         $config->setValue('name', $value);
         $this->assertEquals($value, $config->getValue('name'));
     }
@@ -21,7 +21,7 @@ class MutableJsonConfigTest extends BaseTest
      */
     public function testSetValueWithMutableConfigForNewNode($value)
     {
-        $config = $this->createMutableConfig(__DIR__ . '/config/app.json');
+        $config = $this->createMutableJsonConfig(__DIR__ . '/config/app.json');
 
         $config->setValue('new.node', $value);
         $this->assertEquals($value, $config->getValue('new.node'));

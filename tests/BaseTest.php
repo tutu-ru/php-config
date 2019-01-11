@@ -23,7 +23,7 @@ abstract class BaseTest extends TestCase
     }
 
 
-    protected function createMutableConfig(string $filename, bool $mock = false): MutableJsonConfig
+    protected function createMutableJsonConfig(string $filename, bool $mock = false): MutableJsonConfig
     {
         if ($mock) {
             $config = $this->getMockBuilder(MutableJsonConfig::class)
