@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\Config;
 
-class ConfigContainerMock extends \TutuRu\Config\ConfigContainer
+class ConfigContainerStub extends \TutuRu\Config\ConfigContainer
 {
     private $runtimeStorage = [];
 
